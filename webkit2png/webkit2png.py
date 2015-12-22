@@ -61,7 +61,7 @@ class WebkitRenderer(QObject):
         self.scaleRatio = kwargs.get('scaleRatio', 'keep')
         self.format = kwargs.get('format', 'png')
         self.logger = kwargs.get('logger', None)
-        
+
         # Set this to true if you want to capture flash.
         # Not that your desktop must be large enough for
         # fitting the whole window.
@@ -130,7 +130,7 @@ class CookieJar(QNetworkCookieJar):
 
 	def allCookies(self):
 		return QNetworkCookieJar.allCookies(self)
-	
+
 	def setAllCookies(self, cookieList):
 		QNetworkCookieJar.setAllCookies(self, cookieList)
 
@@ -272,8 +272,11 @@ class _WebkitRendererHelper(QObject):
         # shal be loaded
         if type(res) == tuple:
             url = res[1]
-        else:
+        elif res.startswith("http"):
             url = res
+        # We expect "res" to be a single string of HTML code
+        else:
+            url = ""
 
         if self.encodedUrl:
             qtUrl = QUrl.fromEncoded(url)
@@ -287,8 +290,10 @@ class _WebkitRendererHelper(QObject):
         # Load the page
         if type(res) == tuple:
             self._page.mainFrame().setHtml(res[0], qtUrl) # HTML, baseUrl
-        else:
+        elif res.startswith("http"):
             self._page.mainFrame().load(qtUrl)
+        else:
+            self._page.mainFrame().setHtml(res, qtUrl) # HTML, baseUrl
 
         while self.__loading:
             if timeout > 0 and time.time() >= cancelAt:

@@ -85,7 +85,7 @@ def main():
                 + "This is free software, and you are welcome to redistribute " \
                 + "it under the terms of the GNU General Public License v2."
 
-    parser = OptionParser(usage="usage: %prog [options] <URL>",
+    parser = OptionParser(usage="usage: %prog [options] (<URL>|<HTML code>)",
                           version="%prog " + VERSION + ", Copyright (c) Roland Tapken",
                           description=description, add_help_option=True)
     parser.add_option("-x", "--xvfb", nargs=2, type="int", dest="xvfb",
@@ -130,7 +130,7 @@ def main():
         parser.error("incorrect number of arguments")
     if options.display and options.xvfb:
         parser.error("options -x and -d are mutually exclusive")
-    options.url = args[0]
+    options.res = args[0]
 
     logging.basicConfig(filename=options.logfile,level=logging.WARN,)
 
@@ -200,7 +200,7 @@ def main():
                 if "plugins" in options.features:
                     renderer.qWebSettings[QWebSettings.PluginsEnabled] = True
 
-            renderer.render_to_file(res=options.url, file_object=options.output)
+            renderer.render_to_file(res=options.res, file_object=options.output)
             options.output.close()
             QApplication.exit(0)
         except RuntimeError, e:
