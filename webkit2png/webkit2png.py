@@ -268,8 +268,9 @@ class _WebkitRendererHelper(QObject):
         # When "res" is of type tuple, it has two elements where the first
         # element is the HTML code to render and the second element is a string
         # setting the base URL for the interpreted HTML code.
-        # When resource is of type str or unicode, it is handled as URL which
-        # shal be loaded
+        # When resource is of type str or unicode starting with 'http', it is
+        # handled as a URL which shall be loaded. Otherwise, as a path to a
+        # file containing HTML code which shall be loaded.
         if type(res) == tuple:
             url = res[1]
         elif res.startswith("http"):
@@ -293,7 +294,11 @@ class _WebkitRendererHelper(QObject):
         elif res.startswith("http"):
             self._page.mainFrame().load(qtUrl)
         else:
-            self._page.mainFrame().setHtml(res, qtUrl) # HTML, baseUrl
+            if not os.path.isfile(res):
+                raise RuntimeError("Given path %s is not a file." % res)
+            with open(res, 'r') as content_file:
+                content = content_file.read()
+                self._page.mainFrame().setHtml(content, qtUrl) # HTML, baseUrl
 
         while self.__loading:
             if timeout > 0 and time.time() >= cancelAt:

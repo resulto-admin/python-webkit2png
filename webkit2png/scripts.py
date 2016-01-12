@@ -85,7 +85,7 @@ def main():
                 + "This is free software, and you are welcome to redistribute " \
                 + "it under the terms of the GNU General Public License v2."
 
-    parser = OptionParser(usage="usage: %prog [options] (<URL>|<HTML code>)",
+    parser = OptionParser(usage="usage: %prog [options] (<URL>|<path to input file>)",
                           version="%prog " + VERSION + ", Copyright (c) Roland Tapken",
                           description=description, add_help_option=True)
     parser.add_option("-x", "--xvfb", nargs=2, type="int", dest="xvfb",
