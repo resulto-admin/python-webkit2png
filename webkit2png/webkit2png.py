@@ -298,6 +298,7 @@ class _WebkitRendererHelper(QObject):
                 raise RuntimeError("Given path %s is not a file." % res)
             with open(res, 'r') as content_file:
                 content = content_file.read()
+                content = unicode(content, "utf-8")
                 self._page.mainFrame().setHtml(content, qtUrl) # HTML, baseUrl
 
         while self.__loading:
